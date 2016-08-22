@@ -16,7 +16,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        let pan: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: "panned:")
+        let pan: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(ViewController.panned(_:)))
         self.view.addGestureRecognizer(pan)
         
         self.path = UIBezierPath()
@@ -30,14 +30,17 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
     func panned(pan: UIPanGestureRecognizer) {
         let h:CGFloat = CGRectGetHeight(self.view.frame)
         let innerControlPointRatio:CGFloat = 0.7
-        let outerControlPointDistance:CGFloat = 75.0
+        let outerControlPointDistance:CGFloat = 75
+        
+        
         
         //我们希望得到触及点的Y坐标，但为了平滑的开始我们只希望得到沿着X轴的变化.
-        let touchPoint:CGPoint = CGPointMake(pan.translationInView(pan.view).x, pan.translationInView(pan.view).y)
+        let touchPoint:CGPoint = CGPointMake(pan.locationInView(pan.view).x, pan.locationInView(pan.view).y)
+        print(touchPoint)
         
         if pan.state == UIGestureRecognizerState.Began || pan.state == UIGestureRecognizerState.Changed {
             self.path.removeAllPoints()
@@ -45,9 +48,9 @@ class ViewController: UIViewController {
             
             //接下来的两步至关重要
             //贝希尔弧线从左上角到触点
-            self.path.addCurveToPoint(CGPointMake(0, touchPoint.y), controlPoint1: CGPointMake(0, touchPoint.y*innerControlPointRatio), controlPoint2: CGPointMake(0, touchPoint.y-outerControlPointDistance))
+            self.path.addCurveToPoint(CGPointMake(0, h), controlPoint1: CGPointMake(0, touchPoint.y * innerControlPointRatio), controlPoint2: CGPointMake(0, touchPoint.y-outerControlPointDistance))
             //还有从左下角到触点也做一个贝希尔弧线
-            self.path.addCurveToPoint(CGPointMake(0, h), controlPoint1: CGPointMake(touchPoint.x, touchPoint.y * innerControlPointRatio), controlPoint2: CGPointMake(0, touchPoint.y + (h - touchPoint.y) * (1.0 - innerControlPointRatio)))
+            self.path.addCurveToPoint(CGPointMake(0, 0), controlPoint1: CGPointMake(touchPoint.x, touchPoint.y * innerControlPointRatio), controlPoint2: CGPointMake(0, touchPoint.y + (h - touchPoint.y) * (1.0 - innerControlPointRatio)))
             self.path.closePath()
         }else if pan.state == UIGestureRecognizerState.Ended || pan.state == UIGestureRecognizerState.Cancelled {
             // When pan is done animate the shape layer back to line.
