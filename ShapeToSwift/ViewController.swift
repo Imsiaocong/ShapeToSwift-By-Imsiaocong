@@ -61,8 +61,8 @@ class ViewController: UIViewController {
             // With lines there would be a pointy tip visible towards end.
             self.path.removeAllPoints()
             self.path.moveToPoint(CGPointZero)
-            self.path.addCurveToPoint(CGPointMake(0, touchPoint.y), controlPoint1: CGPointMake(0, touchPoint.y*innerControlPointRatio), controlPoint2: CGPointMake(0, touchPoint.y-outerControlPointDistance))
-            self.path.addCurveToPoint(CGPointMake(0, h), controlPoint1: CGPointMake(0, touchPoint.y+outerControlPointDistance), controlPoint2: CGPointMake(0, touchPoint.y+(h-touchPoint.y)*(1.0-innerControlPointRatio)))
+            self.path.addCurveToPoint(CGPointMake(0, h), controlPoint1: CGPointMake(0, touchPoint.y*innerControlPointRatio), controlPoint2: CGPointMake(0, touchPoint.y-outerControlPointDistance))
+            self.path.addCurveToPoint(CGPointMake(0, 0), controlPoint1: CGPointMake(0, touchPoint.y+outerControlPointDistance), controlPoint2: CGPointMake(0, touchPoint.y+(h-touchPoint.y)*(1.0-innerControlPointRatio)))
             self.path.closePath()
             let returnAnimation: CABasicAnimation = CABasicAnimation(keyPath: "path")
             returnAnimation.toValue = self.path
